@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +20,7 @@ import com.example.pexelsviews.domain.model.Photo
 import com.example.pexelsviews.presentation.utils.DownloadBroadcastReceiver
 import com.example.pexelsviews.presentation.utils.shimmerDrawable
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,18 +36,19 @@ class DetailsFragment : Fragment() {
     private var isBookmark: Boolean? = null
     private var photo: Photo? = null
 
-    private val viewModelFactory =
+    private val viewModelFactory by lazy {
         DetailsViewModel.provideDetailsViewModelFactory(
             factoryInstance,
             photoId ?: DEFAULT_ID,
             isBookmark ?: DEFAULT_BOOL
         )
+    }
 
     private val viewModel: DetailsViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[DetailsViewModel::class.java]
     }
     private val downloadReceiver = DownloadBroadcastReceiver(
-        onUpdate = { state -> viewModel.updateDownloadState(state) }
+        //onUpdate = { state -> viewModel.updateDownloadState(state) }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +59,7 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,12 +73,21 @@ class DetailsFragment : Fragment() {
         binding.downloadButton.setOnClickListener {
             viewModel.downloadPhoto(photo?.src?.original ?: "")
         }
-        setupBroadcastReceiver(requireContext())
+        setupBroadcastReceiver(requireActivity())
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        handlePhotoState()
+    }
+
+    override fun onDestroyView() {
+        requireContext().unregisterReceiver(downloadReceiver)
+        super.onDestroyView()
+    }
+
+    private fun handlePhotoState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.photoState.collect { state ->
                 when (state) {
@@ -85,6 +99,10 @@ class DetailsFragment : Fragment() {
                     is RequestState.Success -> {
                         binding.progressIndicator.visibility = View.GONE
                         photo = state.data
+
+                        binding.authorName.visibility = View.VISIBLE
+                        binding.authorName.text = photo?.photographer
+
                         Glide.with(requireContext())
                             .load(photo?.src?.original)
                             .placeholder(shimmerDrawable)
@@ -101,21 +119,24 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        requireContext().unregisterReceiver(downloadReceiver)
-        super.onDestroyView()
+    private fun makeToast(message: String) {
+        Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun setupBroadcastReceiver(context: Context) {
 
         val filter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            context.registerReceiver(downloadReceiver, filter)
-        }
+        context.registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            context.registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+//        } else {
+//
+//        }
     }
 
     companion object {

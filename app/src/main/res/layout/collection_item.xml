@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/collection_header_background"
+    android:foreground="@drawable/collection_item_ripple"
+    android:clickable="true"
+    android:focusable="true"
+    android:backgroundTint="@color/lightGray"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp"
+    android:text="Sample name"
+    android:textSize="14sp" />

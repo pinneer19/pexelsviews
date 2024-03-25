@@ -3,7 +3,6 @@ package com.example.pexelsviews.presentation.home.recyclerview
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.navigation.NavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,10 +11,9 @@ import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.ItemPhotoBinding
 import com.example.pexelsviews.domain.model.Photo
 import com.example.pexelsviews.presentation.utils.shimmerDrawable
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerDrawable
 
-class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) : PagingDataAdapter<Photo, PhotosAdapter.ViewHolder>(PhotosDiffCallback()) {
+class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) :
+    PagingDataAdapter<Photo, PhotosAdapter.ViewHolder>(PhotosDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -39,7 +37,7 @@ class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) : PagingDataAd
         if (url.isNotBlank()) {
             Glide.with(context)
                 .load(url)
-                .placeholder(shimmerDrawable)
+                .placeholder(R.drawable.placeholder)
                 .error(R.drawable.broken_image)
                 .into(imageView)
         } else {

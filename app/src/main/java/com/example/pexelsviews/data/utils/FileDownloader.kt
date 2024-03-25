@@ -18,7 +18,8 @@ class FileDownloader(
             .setTitle("Downloading picked photo")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-            .setDescription("Please wait").addRequestHeader("Authorization", token)
+            .setDescription("Please wait")
+            .addRequestHeader("Authorization", token)
         return downloadManager.enqueue(request)
     }
 }

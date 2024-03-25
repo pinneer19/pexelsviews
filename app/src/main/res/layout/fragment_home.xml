@@ -4,50 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".presentation.home.HomeFragment">
 
     <Toolbar
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:contentInsetStart="0dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:orientation="vertical">
 
             <SearchView
                 android:id="@+id/searchView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="24dp"
                 android:background="@drawable/search_background"
                 android:iconifiedByDefault="false"
-                android:queryHint="@string/search"/>
+                android:queryBackground="@android:color/transparent"
+                android:queryHint="@string/search"
+                android:searchIcon="@drawable/ic_search"
+                />
+
 
             <HorizontalScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:visibility="gone"
+                android:layout_height="38dp"
                 android:layout_marginVertical="24dp"
-                android:fillViewport="true">
+                android:layout_marginStart="-24dp"
+                android:fillViewport="true"
+                android:paddingStart="24dp"
+                android:scrollbars="none"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:id="@+id/collectionList"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                </LinearLayout>
+                    android:layout_marginStart="24dp"
+                    android:orientation="horizontal"/>
             </HorizontalScrollView>
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progressIndicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:indicatorColor="@color/red"
                 app:layout_constraintTop_toBottomOf="@id/scrollView"
                 app:trackColor="@color/lightGray"
@@ -55,13 +65,75 @@
         </LinearLayout>
     </Toolbar>
 
+    <LinearLayout
+        android:id="@+id/errorBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_network_icon"
+            />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="24dp" />
+
+        <TextView
+            android:id="@+id/exploreTitle"
+            style="@style/titleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_again"
+            android:textColor="@color/red" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/emptyBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_results"
+            style="@style/bodyMedium"
+            />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="12dp" />
+
+        <TextView
+            android:id="@+id/exploreView"
+            style="@style/titleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/explore"
+            android:textColor="@color/red" />
+    </LinearLayout>
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/searchBar"
-        android:layout_marginHorizontal="24dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/searchBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

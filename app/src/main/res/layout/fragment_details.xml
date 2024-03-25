@@ -19,6 +19,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/authorName"
+        android:visibility="gone"
         style="@style/titleMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,15 +100,13 @@
         app:layout_constraintBottom_toBottomOf="@id/downloadButton"
         app:layout_constraintStart_toStartOf="@id/downloadButton"
         app:layout_constraintTop_toTopOf="@id/downloadButton">
-
-
     </TextView>
 
     <ImageButton
         android:id="@+id/downloadButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/download_icon_background"
         android:backgroundTint="@color/red"
         android:src="@drawable/ic_file_download"
@@ -117,6 +117,7 @@
         android:id="@+id/bookmarkButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/download_icon_background"
         android:src="@drawable/ic_bookmark"
         app:layout_constraintBottom_toBottomOf="parent"

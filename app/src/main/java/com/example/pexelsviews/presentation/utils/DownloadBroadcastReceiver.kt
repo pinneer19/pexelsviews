@@ -5,11 +5,9 @@ import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.pexelsviews.presentation.details.DownloadState
+import android.widget.Toast
 
-class DownloadBroadcastReceiver(
-    private val onUpdate: (DownloadState) -> Unit,
-) : BroadcastReceiver() {
+class DownloadBroadcastReceiver : BroadcastReceiver() {
     @SuppressLint("Range")
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
@@ -21,13 +19,17 @@ class DownloadBroadcastReceiver(
 
             if (cursor.moveToFirst()) {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                onUpdate(DownloadState.Success)
+
                 when (status) {
-                    DownloadManager.STATUS_SUCCESSFUL -> onUpdate(DownloadState.Success)
+                    DownloadManager.STATUS_SUCCESSFUL -> makeToast(
+                        context,
+                        "Image was downloaded successfully"
+                    )
+
                     DownloadManager.STATUS_FAILED -> {
                         val reason =
                             cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
-                        onUpdate(DownloadState.Error(reason.reasonToString()))
+                        makeToast(context, reason.reasonToString())
                     }
                 }
             }
@@ -47,5 +49,13 @@ class DownloadBroadcastReceiver(
             DownloadManager.ERROR_UNHANDLED_HTTP_CODE -> "Download manager can't handle received HTTP code"
             else -> "Unknown error"
         }
+    }
+
+    private fun makeToast(context: Context, message: String) {
+        Toast.makeText(
+            context,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

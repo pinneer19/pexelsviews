@@ -8,4 +8,6 @@
     <string name="sample_name_surname">Name Surname</string>
     <string name="image_not_found">Image not found</string>
     <string name="explore">Explore</string>
+    <string name="try_again">Try Again</string>
+    <string name="empty_results">No results found</string>
 </resources>
