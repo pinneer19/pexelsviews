@@ -1,6 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="24dp"
+    tools:context=".presentation.details.DetailsFragment">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/icon_button_background"
+        android:padding="10dp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/titleMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sample_name_surname"
+        app:layout_constraintBottom_toBottomOf="@id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backButton" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/red"
+        app:layout_constraintTop_toBottomOf="@id/backButton"
+        app:trackColor="@color/lightGray"
+        app:trackThickness="4dp" />
+
+    <LinearLayout
+        android:id="@+id/textBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/bodyMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/image_not_found" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="12dp" />
+
+        <TextView
+            android:id="@+id/exploreTitle"
+            style="@style/titleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/explore"
+            android:textColor="@color/red" />
+    </LinearLayout>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/photoImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@color/lightGray"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/backButton"
+        app:layout_constraintVertical_weight="1"
+        app:shapeAppearanceOverlay="@style/ItemDetailsShape" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/labelLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:background="@drawable/download_text_background"
+        android:backgroundTint="@color/lightGray"
+        android:gravity="center_vertical"
+        android:paddingStart="65dp"
+        android:paddingEnd="37dp"
+        android:text="@string/download"
+        app:layout_constraintBottom_toBottomOf="@id/downloadButton"
+        app:layout_constraintStart_toStartOf="@id/downloadButton"
+        app:layout_constraintTop_toTopOf="@id/downloadButton">
+
+
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/downloadButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/download_icon_background"
+        android:backgroundTint="@color/red"
+        android:src="@drawable/ic_file_download"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/bookmarkButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/download_icon_background"
+        android:src="@drawable/ic_bookmark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

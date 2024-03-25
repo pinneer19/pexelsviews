@@ -3,6 +3,7 @@ package com.example.pexelsviews.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.example.pexelsviews.BuildConfig
 import com.example.pexelsviews.data.local.PexelsDatabase
 import com.example.pexelsviews.data.remote.api.PexelsApiService
 import com.example.pexelsviews.data.repository.BookmarkRepositoryImpl
@@ -26,8 +27,6 @@ import javax.inject.Singleton
 object DataModule {
 
     private const val REQUEST_HEADER_AUTH = "Authorization"
-    private const val BASE_URL = ""
-    private const val API_KEY = ""
 
     @Provides
     @Singleton
@@ -43,13 +42,13 @@ object DataModule {
     @Singleton
     fun provideApiService(): PexelsApiService {
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(
                 OkHttpClient.Builder().addInterceptor { chain ->
                     val request = chain.request()
                         .newBuilder()
-                        .addHeader(REQUEST_HEADER_AUTH, API_KEY)
+                        .addHeader(REQUEST_HEADER_AUTH, BuildConfig.API_KEY)
                         .build()
                     chain.proceed(request)
                 }.build()
@@ -75,7 +74,8 @@ object DataModule {
         return PhotoRepositoryImpl(
             apiService = apiService,
             db = photoDb,
-            context = context
+            context = context,
+            authToken = BuildConfig.API_KEY
         )
     }
 

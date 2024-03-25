@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="ItemPhotoShape">
         <item name="cornerSize">20dp</item>
         <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="ItemDetailsShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Adjust as needed -->
+    </style>
+
+    <style name="titleMedium">
+        <item name="android:fontFamily">@font/mulish_bold_700</item>
+        <item name="android:fontWeight">700</item>
+        <item name="lineHeight">22.59sp</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="labelMedium">
+        <item name="android:fontFamily">@font/mulish_regular_400</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">17.57sp</item>
+    </style>
+
+    <style name="labelLarge">
+        <item name="android:fontFamily">@font/mulish_semibold_600</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">17.57sp</item>
+    </style>
+
+    <style name="bodyMedium">
+        <item name="android:fontFamily">@font/mulish_medium_500</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">17.57sp</item>
     </style>
 </resources>

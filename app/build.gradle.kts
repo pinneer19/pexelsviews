@@ -26,6 +26,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_KEY", project.properties["API_KEY"].toString())
+            buildConfigField("String", "BASE_URL", project.properties["BASE_URL"].toString())
+        }
+        debug {
+            buildConfigField("String", "API_KEY", project.properties["API_KEY"].toString())
+            buildConfigField("String", "BASE_URL", project.properties["BASE_URL"].toString())
         }
     }
     compileOptions {
@@ -37,6 +43,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -66,4 +73,8 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.shimmer)
+
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 }

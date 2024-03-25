@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.imageview.ShapeableImageView
-    android:id="@+id/imageView"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:shapeAppearanceOverlay="@style/ItemPhotoShape"
-    android:src="@color/black"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/item_photo_background"
+        android:scaleType="centerCrop"
+        />
+</RelativeLayout>

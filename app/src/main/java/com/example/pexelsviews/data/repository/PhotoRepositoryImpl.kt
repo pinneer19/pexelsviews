@@ -20,7 +20,8 @@ import javax.inject.Inject
 class PhotoRepositoryImpl @Inject constructor(
     private val apiService: PexelsApiService,
     private val db: PexelsDatabase,
-    private val context: Context
+    private val context: Context,
+    private val authToken: String
 ) : PhotoRepository {
 
     override suspend fun getPhotoDetails(id: Int, fromDatabase: Boolean): Photo {
@@ -31,7 +32,7 @@ class PhotoRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun downloadPhoto(photoUrl: String, authToken: String): Long {
+    override fun downloadPhoto(photoUrl: String): Long {
         val downloader = FileDownloader(context = context, token = authToken)
         return downloader.download(url = photoUrl)
     }

@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface PhotoRepository {
     suspend fun getPhotoDetails(id: Int, fromDatabase: Boolean = false): Photo
     suspend fun getPhotos(query: String, pageSize: Int): Flow<PagingData<Photo>>
-    fun downloadPhoto(photoUrl: String, authToken: String): Long
+    fun downloadPhoto(photoUrl: String): Long
 }
