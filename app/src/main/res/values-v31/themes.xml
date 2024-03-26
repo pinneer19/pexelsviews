@@ -1,5 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
     <style name="Base.Theme.PexelsViews" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="android:statusBarColor">@color/white</item>
@@ -16,7 +17,8 @@
         <item name="colorOnSurfaceVariant">@color/white</item>
         <item name="colorOnTertiary">@color/gray</item>
         <item name="android:editTextStyle">@color/black</item>
+        <item name="android:windowSplashScreenBackground">@color/red</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_animation</item>
+        <item name="android:windowSplashScreenAnimationDuration">1500</item>
     </style>
-
-    <style name="Theme.PexelsViews" parent="Base.Theme.PexelsViews" />
 </resources>

@@ -1,29 +1,14 @@
 package com.example.pexelsviews.presentation
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
-import android.view.animation.AnticipateInterpolator
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.doOnEnd
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.ActivityMainBinding
-import com.example.pexelsviews.presentation.home.HomeCollectionState
-import com.example.pexelsviews.presentation.home.HomeFragment
-import com.example.pexelsviews.presentation.home.HomeViewModel
 import com.example.pexelsviews.presentation.utils.BackPressHandler
 import com.example.pexelsviews.presentation.utils.dpToPx
 import com.example.pexelsviews.presentation.utils.getTopFragment
@@ -34,18 +19,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private val homeViewModel by lazy {
-        ViewModelProvider(this)[HomeViewModel::class.java]
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-
-        if (savedInstanceState == null) {
-            setupSplashScreen()
-        }
 
         setContentView(binding.root)
 
@@ -72,42 +50,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun isTopFragmentConsumedBackPress(): Boolean {
         return getTopFragment<BackPressHandler>()?.onBackPressed() ?: false
-    }
-
-
-    private fun setupSplashScreen() {
-
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                homeViewModel.homeCollectionState.value !is HomeCollectionState.Loading &&
-                        homeViewModel.homeCollectionState.value !is HomeCollectionState.Idle
-            }
-            setOnExitAnimationListener { splashScreenView ->
-                val backgroundColorAnimator = ValueAnimator.ofArgb(
-                    splashScreenView.view.getBackgroundColor(), Color.TRANSPARENT
-                ).apply {
-                    duration = 200L
-                    addUpdateListener { animator ->
-                        splashScreenView.view.setBackgroundColor(animator.animatedValue as Int)
-                    }
-                }
-                val iconExitAnimation = ObjectAnimator.ofFloat(
-                    splashScreenView.iconView,
-                    View.TRANSLATION_X,
-                    0f,
-                    splashScreenView.view.width.toFloat()
-                ).apply {
-                    interpolator = AnticipateInterpolator()
-                    duration = 500L
-                }
-
-                AnimatorSet().apply {
-                    play(backgroundColorAnimator).after(iconExitAnimation)
-                    doOnEnd { splashScreenView.remove() }
-                    start()
-                }
-            }
-        }
     }
 
     /*
@@ -144,12 +86,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun View.getBackgroundColor() =
-        (background as? ColorDrawable?)?.color ?: Color.TRANSPARENT
-
     companion object {
-        private const val ICON_AMOUNT = 2
-        private const val DP_OFFSET = 7
         private const val ANIMATION_DURATION = 300L
     }
 }

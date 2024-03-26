@@ -17,6 +17,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -44,7 +45,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel by lazy { ViewModelProvider(requireActivity())[HomeViewModel::class.java] }
+    private val viewModel by viewModels<HomeViewModel>()
     private var selectedIndex: Int = -1
 
     override fun onCreateView(
