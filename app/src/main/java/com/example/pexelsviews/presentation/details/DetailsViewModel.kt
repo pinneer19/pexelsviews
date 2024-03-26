@@ -35,7 +35,10 @@ class DetailsViewModel @AssistedInject constructor(
     private val _bookmarkState = MutableStateFlow(isBookmark)
     val bookmarkState = _bookmarkState.asStateFlow()
 
+    private var initialState = isBookmark
+
     init {
+        checkBookmarkExistence()
         loadPhotoDetails()
     }
 
@@ -53,17 +56,27 @@ class DetailsViewModel @AssistedInject constructor(
         }
     }
 
+    private fun checkBookmarkExistence() {
+        viewModelScope.launch {
+            val exist = bookmarkRepository.checkBookmarkStatus(id, isBookmark)
+            initialState = exist
+            _bookmarkState.emit(exist)
+        }
+    }
+
     fun downloadPhoto(url: String) {
         photoRepository.downloadPhoto(url)
     }
 
     fun updateBookmarkState() {
-        _bookmarkState.value = !_bookmarkState.value
+        viewModelScope.launch {
+            _bookmarkState.emit(!_bookmarkState.value)
+        }
     }
 
     fun saveBookmarkState() {
         viewModelScope.launch {
-            if (isBookmark != _bookmarkState.value) {
+            if (initialState != _bookmarkState.value) {
                 when (_bookmarkState.value) {
                     true -> {
                         if (_photoState.value is RequestState.Success) {
@@ -71,7 +84,7 @@ class DetailsViewModel @AssistedInject constructor(
                         }
                     }
 
-                    false -> bookmarkRepository.deleteBookmark(id)
+                    false -> bookmarkRepository.deleteBookmark(id, isBookmark)
                 }
             }
         }

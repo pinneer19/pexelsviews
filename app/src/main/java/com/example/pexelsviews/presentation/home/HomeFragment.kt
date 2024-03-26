@@ -250,7 +250,6 @@ class HomeFragment : Fragment() {
     private fun observeLoadState(adapter: PhotosAdapter) {
         lifecycleScope.launch {
             adapter.loadStateFlow.debounce(200).collectLatest { state ->
-                println(state)
                 if (state.refresh is LoadState.Loading || state.append is LoadState.Loading) {
                     binding.progressIndicator.visibility = View.VISIBLE
                 } else {

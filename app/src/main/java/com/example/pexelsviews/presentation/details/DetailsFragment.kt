@@ -32,15 +32,17 @@ import com.bumptech.glide.request.target.Target
 import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.FragmentDetailsBinding
 import com.example.pexelsviews.domain.model.Photo
+import com.example.pexelsviews.presentation.utils.BackPressHandler
 import com.example.pexelsviews.presentation.utils.DownloadBroadcastReceiver
 import com.example.pexelsviews.presentation.utils.setupExploreTextView
 import com.google.android.material.internal.ThemeEnforcement.obtainStyledAttributes
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), BackPressHandler {
 
     @Inject
     lateinit var factoryInstance: DetailsViewModel.Factory
@@ -111,18 +113,27 @@ class DetailsFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun setupBookmarkButton() {
-        updateBookmarkIcon()
-        binding.bookmarkButton.setOnClickListener {
-            viewModel.updateBookmarkState()
-            updateBookmarkIcon()
-        }
-
+    override fun onBackPressed(): Boolean {
+        viewModel.saveBookmarkState()
+        return false
     }
 
-    private fun updateBookmarkIcon() {
+    private fun setupBookmarkButton() {
+
+        binding.bookmarkButton.setOnClickListener {
+            viewModel.updateBookmarkState()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.bookmarkState.collectLatest { state ->
+                updateBookmarkIcon(state)
+            }
+        }
+    }
+
+    private fun updateBookmarkIcon(state: Boolean) {
         var tint: ColorStateList? = null
-        val imgResource = if (viewModel.bookmarkState.value) {
+        val imgResource = if (state) {
             R.drawable.ic_bookmark_active
         } else {
             val value = TypedValue()

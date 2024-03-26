@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.pexelsviews.domain.model.FeaturedCollection
 import com.example.pexelsviews.domain.model.Photo
+import com.example.pexelsviews.domain.repository.BookmarkRepository
 import com.example.pexelsviews.domain.repository.CollectionRepository
 import com.example.pexelsviews.domain.repository.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val photoRepository: PhotoRepository,
-    private val collectionRepository: CollectionRepository
+    private val collectionRepository: CollectionRepository,
+    private val bookmarkRepository: BookmarkRepository
 ) : ViewModel() {
 
     private val _homeCollectionState =

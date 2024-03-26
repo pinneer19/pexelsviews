@@ -24,7 +24,9 @@ import com.example.pexelsviews.databinding.ActivityMainBinding
 import com.example.pexelsviews.presentation.home.HomeCollectionState
 import com.example.pexelsviews.presentation.home.HomeFragment
 import com.example.pexelsviews.presentation.home.HomeViewModel
+import com.example.pexelsviews.presentation.utils.BackPressHandler
 import com.example.pexelsviews.presentation.utils.dpToPx
+import com.example.pexelsviews.presentation.utils.getTopFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,7 +40,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -62,6 +63,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+
+    override fun onBackPressed() {
+        if (!isTopFragmentConsumedBackPress()) {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun isTopFragmentConsumedBackPress(): Boolean {
+        return getTopFragment<BackPressHandler>()?.onBackPressed() ?: false
+    }
+
 
     private fun setupSplashScreen() {
 

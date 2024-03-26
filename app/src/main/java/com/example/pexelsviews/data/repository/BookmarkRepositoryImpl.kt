@@ -33,8 +33,20 @@ class BookmarkRepositoryImpl @Inject constructor(
         dao.insertBookmark(photo.toBookmarkEntity())
     }
 
-    override suspend fun deleteBookmark(id: Int) {
-        dao.deleteBookmark(id)
+    override suspend fun deleteBookmark(id: Int, isBookmark: Boolean) {
+        return if (isBookmark) {
+            dao.deleteBookmarkById(id)
+        } else {
+            dao.deleteBookmarkByPhotoId(id)
+        }
+    }
+
+    override suspend fun checkBookmarkStatus(id: Int, isBookmark: Boolean): Boolean {
+        return if (isBookmark) {
+            dao.checkBookmarkStatusById(id)
+        } else {
+            dao.checkBookmarkStatusByPhotoId(id)
+        }
     }
 
     companion object {
