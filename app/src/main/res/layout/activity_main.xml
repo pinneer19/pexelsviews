@@ -13,18 +13,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:navGraph="@navigation/navigation" />
 
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@color/white"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:menu="@menu/bottom_nav_menu">-->
-<!--    </com.google.android.material.bottomnavigation.BottomNavigationView>-->
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:elevation="100dp"
+        app:itemIconTint="@null"
+        app:backgroundTint="?attr/colorOnSurfaceVariant"
+
+        app:itemActiveIndicatorStyle="@android:color/transparent"
+        app:itemHorizontalTranslationEnabled="false"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu">
+        <View
+            android:id="@+id/indicatorView"
+            android:layout_width="24dp"
+            android:layout_height="2dp"
+            android:layout_gravity="top|start"
+            android:background="?attr/colorPrimary" />
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </androidx.constraintlayout.widget.ConstraintLayout>

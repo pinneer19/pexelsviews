@@ -6,11 +6,16 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.core.view.isInvisible
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,9 +27,15 @@ import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.FragmentHomeBinding
 import com.example.pexelsviews.presentation.home.recyclerview.PhotosAdapter
 import com.example.pexelsviews.presentation.utils.countScan
+import com.example.pexelsviews.presentation.utils.dpToPx
+import com.example.pexelsviews.presentation.utils.getColor
+import com.example.pexelsviews.presentation.utils.getColorStateList
+import com.example.pexelsviews.presentation.utils.setupExploreTextView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -46,7 +57,17 @@ class HomeFragment : Fragment() {
         setupPhotosList()
         setupSearchInput()
 
-        binding.exploreView.setOnClickListener {
+        val bottomBar = requireActivity().findViewById<FrameLayout>(R.id.bottomNavigationView)
+        bottomBar.visibility = View.VISIBLE
+
+        setupExploreTextView(binding.tryAgainView) {
+            if (viewModel.homeCollectionState.value is HomeCollectionState.Error) {
+                viewModel.loadCollections()
+            }
+            (binding.recyclerView.adapter as PhotosAdapter).retry()
+        }
+
+        setupExploreTextView(binding.exploreView) {
             binding.searchView.setQuery("", true)
             binding.searchView.clearFocus()
         }
@@ -65,65 +86,21 @@ class HomeFragment : Fragment() {
                     }
 
                     is HomeCollectionState.Success -> {
-                        binding.progressIndicator.visibility = View.GONE
                         binding.scrollView.visibility = View.VISIBLE
                         binding.collectionList.visibility = View.VISIBLE
                         fillCollectionsView(layoutInflater, state.collections.map { it.title })
                     }
 
                     is HomeCollectionState.Error -> {
-                        binding.progressIndicator.visibility = View.VISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "Check your internet connection",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         binding.collectionList.visibility = View.GONE
-                        binding.recyclerView.visibility = View.GONE
-                        binding.errorBlock.visibility = View.VISIBLE
                     }
                 }
             }
-        }
-    }
-
-    private fun navigateToDetails(photoId: Int) {
-        val bundle = Bundle().apply {
-            putInt(KEY_PHOTO_ID, photoId)
-            putBoolean(KEY_IS_BOOKMARK, false)
-        }
-        Navigation.findNavController(binding.root)
-            .navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
-    }
-
-    private fun setupPhotosList() {
-        val adapter = PhotosAdapter(
-            navigateToDetails = { photoId -> navigateToDetails(photoId) }
-        )
-        val columnWidth = resources.getDimensionPixelSize(R.dimen.column_width)
-        val screenWidth = resources.displayMetrics.widthPixels
-        val spanCount = screenWidth / columnWidth
-
-        val layoutManager = StaggeredGridLayoutManager(spanCount, LinearLayoutManager.VERTICAL)
-        layoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = adapter
-
-        observePhotos(adapter)
-        handleListVisibility(adapter)
-    }
-
-    private fun observePhotos(adapter: PhotosAdapter) {
-        lifecycleScope.launch {
-            viewModel.pager.collectLatest { pagingData ->
-                adapter.submitData(pagingData)
-                updateEmptyBlock(adapter.itemCount)
-            }
-        }
-    }
-
-    private fun updateEmptyBlock(itemsCount: Int) {
-        if (itemsCount == 0) {
-            binding.emptyBlock.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        } else {
-            binding.emptyBlock.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 
@@ -138,8 +115,13 @@ class HomeFragment : Fragment() {
             addInnerMargin(textView, index == collections.lastIndex)
 
             textView.setOnClickListener {
-                viewStyleUpdate(it as TextView, index, linearLayout)
-                binding.searchView.setQuery(item, true)
+                println("$index $selectedIndex")
+                if (index == selectedIndex) {
+                    binding.searchView.setQuery("", true)
+                    binding.searchView.clearFocus()
+                } else {
+                    binding.searchView.setQuery(item, true)
+                }
             }
             linearLayout.addView(textView)
         }
@@ -184,10 +166,18 @@ class HomeFragment : Fragment() {
         with(textView) {
             when (isSelected) {
                 false -> {
-                    backgroundTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(context, R.color.lightGray)
-                    )
-                    setTextColor(ContextCompat.getColor(context, R.color.black))
+
+                    val stateList =
+                        com.google.android.material.R.attr.colorPrimaryContainer.getColorStateList(
+                            requireContext()
+                        )
+                    backgroundTintList = stateList
+
+                    val textColor =
+                        com.google.android.material.R.attr.colorOnPrimaryContainer.getColor(
+                            requireContext()
+                        )
+                    setTextColor(textColor)
                     setTextAppearance(R.style.labelMedium)
                 }
 
@@ -202,6 +192,93 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+    private fun setupPhotosList() {
+        val adapter = PhotosAdapter(
+            navigateToDetails = { photoId -> navigateToDetails(photoId) }
+        )
+
+        adapter.addOnPagesUpdatedListener {
+            updateEmptyBlock(adapter.itemCount)
+        }
+
+        val layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        layoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter
+
+        observePhotos(adapter)
+        observeLoadState(adapter)
+        handleScrollingToTopWhenSearching(adapter)
+    }
+
+    private fun navigateToDetails(photoId: Int) {
+        val bundle = Bundle().apply {
+            putInt(KEY_PHOTO_ID, photoId)
+            putBoolean(KEY_IS_BOOKMARK, false)
+        }
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
+    }
+
+    private fun observePhotos(adapter: PhotosAdapter) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.pager.collectLatest { pagingData ->
+                adapter.submitData(pagingData)
+            }
+        }
+    }
+
+    private fun handleScrollingToTopWhenSearching(adapter: PhotosAdapter) = lifecycleScope.launch {
+        getRefreshLoadStateFlow(adapter)
+            .countScan(count = 2)
+            .collectLatest { (previousState, currentState) ->
+                if (previousState is LoadState.Loading && currentState is LoadState.NotLoading) {
+                    binding.recyclerView.scrollToPosition(0)
+                }
+            }
+    }
+
+    private fun getRefreshLoadStateFlow(adapter: PhotosAdapter): Flow<LoadState> {
+        return adapter.loadStateFlow
+            .map { it.refresh }
+    }
+
+
+    @OptIn(FlowPreview::class)
+    private fun observeLoadState(adapter: PhotosAdapter) {
+        lifecycleScope.launch {
+            adapter.loadStateFlow.debounce(200).collectLatest { state ->
+                println(state)
+                if (state.refresh is LoadState.Loading || state.append is LoadState.Loading) {
+                    binding.progressIndicator.visibility = View.VISIBLE
+                } else {
+                    if (binding.errorBlock.visibility == View.VISIBLE
+                        && viewModel.homeCollectionState.value !is HomeCollectionState.Error
+                    ) {
+                        binding.errorBlock.visibility = View.GONE
+                    }
+                    binding.progressIndicator.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun updateEmptyBlock(itemsCount: Int) {
+        if (itemsCount == 0) {
+            if (viewModel.homeCollectionState.value is HomeCollectionState.Error) {
+                binding.errorBlock.visibility = View.VISIBLE
+            } else {
+                binding.emptyBlock.visibility = View.VISIBLE
+            }
+            binding.recyclerView.visibility = View.GONE
+        } else {
+            binding.emptyBlock.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
+        }
+    }
+
 
     private fun setupSearchInput() {
         with(binding.searchView) {
@@ -222,27 +299,16 @@ class HomeFragment : Fragment() {
             for (i in 0 until childCount) {
                 val currentView = getChildAt(i) as TextView
 
-                if (currentView.text == query || selectedIndex == i) {
+                if (currentView.text == query) {
                     viewStyleUpdate(currentView, i, this)
                     return@with
                 }
             }
-        }
-    }
-
-    private fun handleListVisibility(adapter: PhotosAdapter) = lifecycleScope.launch {
-        getRefreshLoadStateFlow(adapter)
-            .countScan()
-            .collectLatest { (beforePrevious, previous, current) ->
-                binding.recyclerView.isInvisible = current is LoadState.Error
-                        || previous is LoadState.Error
-                        || (beforePrevious is LoadState.Error && previous is LoadState.NotLoading
-                        && current is LoadState.Loading)
+            if (selectedIndex != -1) {
+                viewStyleUpdate(getChildAt(selectedIndex) as TextView, selectedIndex, this)
+                return@with
             }
-    }
-
-    private fun getRefreshLoadStateFlow(adapter: PhotosAdapter): Flow<LoadState> {
-        return adapter.loadStateFlow.map { it.refresh }
+        }
     }
 
     companion object {

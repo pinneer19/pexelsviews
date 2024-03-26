@@ -15,4 +15,16 @@
         android:adjustViewBounds="true"
         android:foreground="?attr/selectableItemBackground"
         android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/authorTextView"
+        style="@style/labelMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#66000000"
+        android:gravity="center_horizontal"
+        android:paddingVertical="10dp"
+        android:text="Hello pizza"
+        android:textColor="@color/white" />
 </androidx.cardview.widget.CardView>

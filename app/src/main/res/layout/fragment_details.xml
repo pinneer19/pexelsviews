@@ -12,6 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:tint="?attr/colorOnPrimaryContainer"
         android:background="@drawable/icon_button_background"
         android:padding="10dp"
         android:src="@drawable/ic_arrow_back"
@@ -20,11 +23,12 @@
 
     <TextView
         android:id="@+id/authorName"
-        android:visibility="gone"
         style="@style/titleMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sample_name_surname"
+        android:visibility="gone"
+        android:textColor="?attr/colorOnPrimaryContainer"
         app:layout_constraintBottom_toBottomOf="@id/backButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +40,12 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="invisible"
-        app:indicatorColor="@color/red"
+        android:layout_marginTop="10dp"
+        app:indicatorColor="?attr/colorPrimary"
+        app:trackCornerRadius="20dp"
         app:layout_constraintTop_toBottomOf="@id/backButton"
-        app:trackColor="@color/lightGray"
-        app:trackThickness="4dp" />
+        app:trackColor="?attr/colorOnTertiary"
+        app:trackThickness="3dp" />
 
     <LinearLayout
         android:id="@+id/textBlock"
@@ -69,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/explore"
-            android:textColor="@color/red" />
+            android:textColor="?attr/colorPrimary" />
     </LinearLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -92,15 +98,15 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:background="@drawable/download_text_background"
-        android:backgroundTint="@color/lightGray"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:textColor="?attr/colorOnPrimaryContainer"
         android:gravity="center_vertical"
         android:paddingStart="65dp"
         android:paddingEnd="37dp"
         android:text="@string/download"
         app:layout_constraintBottom_toBottomOf="@id/downloadButton"
         app:layout_constraintStart_toStartOf="@id/downloadButton"
-        app:layout_constraintTop_toTopOf="@id/downloadButton">
-    </TextView>
+        app:layout_constraintTop_toTopOf="@id/downloadButton"/>
 
     <ImageButton
         android:id="@+id/downloadButton"
@@ -108,7 +114,8 @@
         android:layout_height="48dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/download_icon_background"
-        android:backgroundTint="@color/red"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_file_download"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -119,9 +126,12 @@
         android:layout_height="48dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/download_icon_background"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_bookmark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/black" />
+        app:tint="?attr/colorOnPrimaryContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

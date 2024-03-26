@@ -12,13 +12,28 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookmarksFragment"
         android:name="com.example.pexelsviews.presentation.bookmarks.BookmarksFragment"
         android:label="fragment_bookmarks"
-        tools:layout="@layout/fragment_bookmarks" />
+        tools:layout="@layout/fragment_bookmarks" >
+        <action
+            android:id="@+id/action_bookmarksFragment_to_detailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_bookmarksFragment_to_homeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:destination="@id/homeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.example.pexelsviews.presentation.details.DetailsFragment"
@@ -26,6 +41,8 @@
         tools:layout="@layout/fragment_details" >
         <action
             android:id="@+id/action_detailsFragment_to_homeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
             app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

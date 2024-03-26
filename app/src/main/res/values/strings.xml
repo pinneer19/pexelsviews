@@ -10,4 +10,7 @@
     <string name="explore">Explore</string>
     <string name="try_again">Try Again</string>
     <string name="empty_results">No results found</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="not_saved_results">You haven\'t saved anything yet</string>
+    <string name="something_went_wrong">Something went wrong...</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.pexelsviews.presentation.home.recyclerview
+package com.example.pexelsviews.presentation.bookmarks.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.pexelsviews.R
-import com.example.pexelsviews.databinding.ItemPhotoBinding
+import com.example.pexelsviews.databinding.ItemBookmarkBinding
 import com.example.pexelsviews.domain.model.Photo
-import com.example.pexelsviews.presentation.utils.shimmerDrawable
 
-class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) :
-    PagingDataAdapter<Photo, PhotosAdapter.ViewHolder>(PhotosDiffCallback()) {
+
+class BookmarksAdapter(private val navigateToDetails: (Int) -> Unit) :
+    PagingDataAdapter<Photo, BookmarksAdapter.ViewHolder>(BookmarksDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemPhotoBinding.inflate(inflater, parent, false)
+        val binding = ItemBookmarkBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
@@ -25,6 +25,7 @@ class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) :
         val photo = getItem(position) ?: return
         with(holder.binding) {
             loadImage(imageView, photo.src.medium)
+            authorTextView.text = photo.photographer
             imageView.setOnClickListener {
                 navigateToDetails(photo.id)
             }
@@ -38,19 +39,19 @@ class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) :
             Glide.with(context)
                 .load(url)
                 .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error_placeholder)
+                .error(R.drawable.broken_image)
                 .into(imageView)
         } else {
             Glide.with(context)
-                .load(R.drawable.error_placeholder)
+                .load(R.drawable.broken_image)
                 .into(imageView)
         }
     }
 
-    class ViewHolder(val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemBookmarkBinding) : RecyclerView.ViewHolder(binding.root)
 }
 
-class PhotosDiffCallback : DiffUtil.ItemCallback<Photo>() {
+class BookmarksDiffCallback : DiffUtil.ItemCallback<Photo>() {
     override fun areItemsTheSame(oldItem: Photo, newItem: Photo): Boolean {
         return oldItem.id == newItem.id
     }

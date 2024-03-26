@@ -6,7 +6,7 @@
     android:foreground="@drawable/collection_item_ripple"
     android:clickable="true"
     android:focusable="true"
-    android:backgroundTint="@color/lightGray"
+    android:backgroundTint="?attr/colorPrimaryContainer"
     android:paddingHorizontal="20dp"
     android:paddingVertical="10dp"
     android:text="Sample name"

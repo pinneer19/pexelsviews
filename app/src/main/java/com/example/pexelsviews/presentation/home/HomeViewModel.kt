@@ -36,6 +36,16 @@ class HomeViewModel @Inject constructor(
     private val _searchText = MutableStateFlow(emptyString())
 
     init {
+        loadCollections()
+        pager = _searchText
+            .debounce(timeoutMillis = 500L)
+            .flatMapLatest {
+                photoRepository.getPhotos(it, PHOTOS_PAGE_SIZE)
+            }
+            .cachedIn(viewModelScope)
+    }
+
+    fun loadCollections() {
         viewModelScope.launch {
             _homeCollectionState.emit(HomeCollectionState.Loading)
             try {
@@ -48,22 +58,11 @@ class HomeViewModel @Inject constructor(
                 _homeCollectionState.emit(HomeCollectionState.Error(error = e.message.toString()))
             }
         }
-
-        pager = _searchText
-            .debounce(timeoutMillis = 500L)
-            .flatMapLatest {
-                photoRepository.getPhotos(it, PHOTOS_PAGE_SIZE)
-            }
-            .cachedIn(viewModelScope)
     }
 
     fun onSearchTextChange(text: String) {
         if (_searchText.value == text) return
         _searchText.value = text
-    }
-
-    fun refresh() {
-        _searchText.tryEmit(_searchText.value)
     }
 
     companion object {

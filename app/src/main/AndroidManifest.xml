@@ -20,7 +20,9 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.PexelsViews.Splash">
+            android:screenOrientation="portrait">
+
+            <!--            android:theme="@style/Theme.PexelsViews.Splash">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,7 +32,7 @@
             android:name=".presentation.utils.DownloadBroadcastReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
     </application>

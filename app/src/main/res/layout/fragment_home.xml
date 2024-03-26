@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorSurface"
     tools:context=".presentation.home.HomeFragment">
 
     <Toolbar
@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:orientation="vertical">
 
             <SearchView
@@ -26,31 +27,29 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="24dp"
                 android:background="@drawable/search_background"
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="@string/search"
-                android:searchIcon="@drawable/ic_search"
-                />
-
+                android:searchIcon="@drawable/ic_search" />
 
             <HorizontalScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_marginVertical="24dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="-24dp"
                 android:fillViewport="true"
+                android:layout_marginBottom="5dp"
                 android:paddingStart="24dp"
                 android:scrollbars="none"
                 android:visibility="visible">
-
                 <LinearLayout
                     android:id="@+id/collectionList"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="38dp"
                     android:layout_marginStart="24dp"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal" />
             </HorizontalScrollView>
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progressIndicator"
@@ -58,13 +57,13 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
                 android:visibility="gone"
-                app:indicatorColor="@color/red"
+                android:layout_marginTop="10dp"
+                app:indicatorColor="?attr/colorPrimary"
                 app:layout_constraintTop_toBottomOf="@id/scrollView"
-                app:trackColor="@color/lightGray"
+                app:trackColor="?attr/colorOnTertiary"
                 app:trackThickness="4dp" />
         </LinearLayout>
     </Toolbar>
-
     <LinearLayout
         android:id="@+id/errorBlock"
         android:layout_width="wrap_content"
@@ -80,21 +79,22 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/no_network_icon"
-            />
+            app:tint="?attr/colorOnPrimaryContainer"
+            android:src="@drawable/no_network_icon" />
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="24dp" />
 
         <TextView
-            android:id="@+id/exploreTitle"
+            android:id="@+id/tryAgainView"
             style="@style/titleMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/try_again"
-            android:textColor="@color/red" />
+            android:textColor="?attr/colorPrimary" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/emptyBlock"
         android:layout_width="wrap_content"
@@ -108,11 +108,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            style="@style/bodyMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/empty_results"
-            style="@style/bodyMedium"
-            />
+            android:text="@string/empty_results" />
 
         <Space
             android:layout_width="wrap_content"
@@ -124,9 +123,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/explore"
-            android:textColor="@color/red" />
+            android:textColor="?attr/colorPrimary" />
     </LinearLayout>
-    
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -134,6 +133,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_weight="1"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/searchBar" />
+        android:paddingBottom="72dp"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
