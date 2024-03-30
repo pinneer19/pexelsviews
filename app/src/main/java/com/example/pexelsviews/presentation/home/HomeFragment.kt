@@ -303,11 +303,19 @@ class HomeFragment : Fragment() {
             viewModel.networkObserver.observe()
                 .countScan(2)
                 .collectLatest { (previousState, currentState) ->
+                    println("$previousState $currentState.")
                     if (previousState == Status.AVAILABLE && currentState == Status.LOST) {
                         Toast.makeText(requireContext(), "Network is lost!", Toast.LENGTH_LONG)
                             .show()
                     } else if (previousState == Status.LOST && currentState == Status.AVAILABLE) {
                         setupRefreshDialog {
+                            (binding.recyclerView.adapter as PhotosAdapter).refresh()
+                        }
+                    } else if (previousState == null && currentState == Status.AVAILABLE
+                        && viewModel.homeCollectionState.value is HomeCollectionState.Error
+                    ) {
+                        setupRefreshDialog {
+                            viewModel.loadCollections()
                             (binding.recyclerView.adapter as PhotosAdapter).refresh()
                         }
                     }
