@@ -12,5 +12,7 @@
     <string name="empty_results">No results found</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="not_saved_results">You haven\'t saved anything yet</string>
-    <string name="something_went_wrong">Something went wrong...</string>
+    <string name="something_went_wrong">Something went wrong…</string>
+    <string name="refresh">Refresh</string>
+    <string name="network_connection_detected">Network connection detected\nWould you like refresh data?</string>
 </resources>

@@ -1,15 +1,17 @@
 package com.example.pexelsviews.presentation.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.pexelsviews.domain.model.FeaturedCollection
 import com.example.pexelsviews.domain.model.Photo
-import com.example.pexelsviews.domain.repository.BookmarkRepository
 import com.example.pexelsviews.domain.repository.CollectionRepository
 import com.example.pexelsviews.domain.repository.PhotoRepository
+import com.example.pexelsviews.presentation.utils.NetworkObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +29,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val photoRepository: PhotoRepository,
     private val collectionRepository: CollectionRepository,
-    private val bookmarkRepository: BookmarkRepository
+    @ApplicationContext val context: Context,
 ) : ViewModel() {
 
     private val _homeCollectionState =
@@ -37,6 +39,8 @@ class HomeViewModel @Inject constructor(
     val pager: Flow<PagingData<Photo>>
     private val _searchText = MutableStateFlow(emptyString())
 
+    val networkObserver: NetworkObserver
+
     init {
         loadCollections()
         pager = _searchText
@@ -45,6 +49,7 @@ class HomeViewModel @Inject constructor(
                 photoRepository.getPhotos(it, PHOTOS_PAGE_SIZE)
             }
             .cachedIn(viewModelScope)
+        networkObserver = NetworkObserver(context)
     }
 
     fun loadCollections() {

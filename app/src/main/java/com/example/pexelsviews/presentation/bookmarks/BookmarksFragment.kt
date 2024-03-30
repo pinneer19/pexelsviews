@@ -10,13 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.FragmentBookmarksBinding
 import com.example.pexelsviews.presentation.bookmarks.recyclerview.BookmarksAdapter
-import com.example.pexelsviews.presentation.home.HomeFragment
-import com.example.pexelsviews.presentation.home.recyclerview.PhotosAdapter
 import com.example.pexelsviews.presentation.utils.setupExploreTextView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

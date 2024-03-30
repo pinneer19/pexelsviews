@@ -12,13 +12,8 @@ import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
-import androidx.core.view.isInvisible
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.paging.LoadState
@@ -27,8 +22,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.FragmentHomeBinding
 import com.example.pexelsviews.presentation.home.recyclerview.PhotosAdapter
+import com.example.pexelsviews.presentation.utils.ConnectivityObserver.Status
 import com.example.pexelsviews.presentation.utils.countScan
-import com.example.pexelsviews.presentation.utils.dpToPx
 import com.example.pexelsviews.presentation.utils.getColor
 import com.example.pexelsviews.presentation.utils.getColorStateList
 import com.example.pexelsviews.presentation.utils.setupExploreTextView
@@ -49,14 +44,12 @@ class HomeFragment : Fragment() {
     private var selectedIndex: Int = -1
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         setupPhotosList()
         setupSearchInput()
+        setupNetworkObserver()
 
         val bottomBar = requireActivity().findViewById<FrameLayout>(R.id.bottomNavigationView)
         bottomBar.visibility = View.VISIBLE
@@ -94,9 +87,7 @@ class HomeFragment : Fragment() {
 
                     is HomeCollectionState.Error -> {
                         Toast.makeText(
-                            requireContext(),
-                            "Check your internet connection",
-                            Toast.LENGTH_SHORT
+                            requireContext(), "Check your internet connection", Toast.LENGTH_SHORT
                         ).show()
                         binding.collectionList.visibility = View.GONE
                     }
@@ -136,9 +127,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun viewStyleUpdate(
-        textView: TextView,
-        index: Int,
-        linearLayout: LinearLayout
+        textView: TextView, index: Int, linearLayout: LinearLayout
     ) {
         textView.isSelected = !textView.isSelected
         when (selectedIndex) {
@@ -195,9 +184,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupPhotosList() {
-        val adapter = PhotosAdapter(
-            navigateToDetails = { photoId -> navigateToDetails(photoId) }
-        )
+        val adapter = PhotosAdapter(navigateToDetails = { photoId -> navigateToDetails(photoId) })
 
         adapter.addOnPagesUpdatedListener {
             updateEmptyBlock(adapter.itemCount)
@@ -232,8 +219,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun handleScrollingToTopWhenSearching(adapter: PhotosAdapter) = lifecycleScope.launch {
-        getRefreshLoadStateFlow(adapter)
-            .countScan(count = 2)
+        getRefreshLoadStateFlow(adapter).countScan(count = 2)
             .collectLatest { (previousState, currentState) ->
                 if (previousState is LoadState.Loading && currentState is LoadState.NotLoading) {
                     binding.recyclerView.scrollToPosition(0)
@@ -242,8 +228,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getRefreshLoadStateFlow(adapter: PhotosAdapter): Flow<LoadState> {
-        return adapter.loadStateFlow
-            .map { it.refresh }
+        return adapter.loadStateFlow.map { it.refresh }
     }
 
 
@@ -253,10 +238,12 @@ class HomeFragment : Fragment() {
             adapter.loadStateFlow.debounce(200).collectLatest { state ->
                 if (state.refresh is LoadState.Loading || state.append is LoadState.Loading) {
                     binding.progressIndicator.visibility = View.VISIBLE
+                } else if (state.append is LoadState.Error) {
+                    Toast.makeText(
+                        requireContext(), "Check your internet connection!", Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    if (binding.errorBlock.visibility == View.VISIBLE
-                        && viewModel.homeCollectionState.value !is HomeCollectionState.Error
-                    ) {
+                    if (binding.errorBlock.visibility == View.VISIBLE && viewModel.homeCollectionState.value !is HomeCollectionState.Error) {
                         binding.errorBlock.visibility = View.GONE
                     }
                     binding.progressIndicator.visibility = View.GONE
@@ -309,6 +296,28 @@ class HomeFragment : Fragment() {
                 return@with
             }
         }
+    }
+
+    private fun setupNetworkObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.networkObserver.observe()
+                .countScan(2)
+                .collectLatest { (previousState, currentState) ->
+                    if (previousState == Status.AVAILABLE && currentState == Status.LOST) {
+                        Toast.makeText(requireContext(), "Network is lost!", Toast.LENGTH_LONG)
+                            .show()
+                    } else if (previousState == Status.LOST && currentState == Status.AVAILABLE) {
+                        setupRefreshDialog {
+                            (binding.recyclerView.adapter as PhotosAdapter).refresh()
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun setupRefreshDialog(onRefreshList: () -> Unit) {
+        val dialog = AlertDialogFragment(onRefreshList)
+        dialog.show(childFragmentManager, "alertDialog")
     }
 
     companion object {

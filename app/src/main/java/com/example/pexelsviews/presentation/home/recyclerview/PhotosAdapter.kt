@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.example.pexelsviews.R
 import com.example.pexelsviews.databinding.ItemPhotoBinding
 import com.example.pexelsviews.domain.model.Photo
-import com.example.pexelsviews.presentation.utils.shimmerDrawable
 
 class PhotosAdapter(private val navigateToDetails: (Int) -> Unit) :
     PagingDataAdapter<Photo, PhotosAdapter.ViewHolder>(PhotosDiffCallback()) {

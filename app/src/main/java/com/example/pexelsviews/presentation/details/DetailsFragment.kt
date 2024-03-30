@@ -1,25 +1,18 @@
 package com.example.pexelsviews.presentation.details
 
-import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.content.IntentFilter
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -35,7 +28,6 @@ import com.example.pexelsviews.domain.model.Photo
 import com.example.pexelsviews.presentation.utils.BackPressHandler
 import com.example.pexelsviews.presentation.utils.DownloadBroadcastReceiver
 import com.example.pexelsviews.presentation.utils.setupExploreTextView
-import com.google.android.material.internal.ThemeEnforcement.obtainStyledAttributes
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
